@@ -1,0 +1,9 @@
+{
+  "email": "alice@example.com",
+  "password": "TestPass123",
+  "display_name": "Alice Johnson",
+  "networking_intention": "Searching for a job",
+  "industry": "Software / SaaS",
+  "tech_skills": ["Frontend (React, Vue, etc.)", "Backend (Node, Python, Java, etc.)"],
+  "soft_skills": ["Communication", "Problem Solving"]
+}

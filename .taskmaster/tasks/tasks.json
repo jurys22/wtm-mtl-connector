@@ -1,0 +1,320 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Project Setup and Database Schema Design",
+        "description": "Initialize the project structure with React TypeScript frontend, Node.js Express backend, and design the database schema for users, sessions, and meeting requests",
+        "details": "Create project structure with separate frontend and backend folders. Initialize React with TypeScript and Vite/CRA. Set up Express.js server with TypeScript. Design database schema with tables: users (id, email, password_hash, display_name, networking_intention, industry, tech_skills, soft_skills), sessions (id, title, start_time, end_time, location), user_sessions (user_id, session_id), meeting_requests (id, requester_id, recipient_id, proposed_time, proposed_place, note, status, created_at). Choose between SQLite for simplicity or PostgreSQL for production readiness. Set up database migrations and connection pooling.",
+        "testStrategy": "Verify project builds successfully, database connections work, and all tables are created with proper constraints and indexes",
+        "priority": "high",
+        "dependencies": [],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:46:07.161Z"
+      },
+      {
+        "id": 2,
+        "title": "User Authentication System",
+        "description": "Implement secure user registration and login with email/password authentication, password hashing, and session management",
+        "details": "Use bcrypt for password hashing with salt rounds of 12. Implement JWT tokens for session management with httpOnly cookies. Create middleware for authentication verification. Set up password validation (min 8 chars, complexity requirements). Implement registration endpoint with email uniqueness validation and login endpoint with credential verification. Add logout functionality to clear sessions. Use express-rate-limit for brute force protection.",
+        "testStrategy": "Test registration with valid/invalid data, login with correct/incorrect credentials, session persistence across requests, and password security measures",
+        "priority": "high",
+        "dependencies": [
+          "1"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:46:18.193Z"
+      },
+      {
+        "id": 3,
+        "title": "User Profile Management API",
+        "description": "Create REST API endpoints for user profile creation, updates, and retrieval with validation for all profile fields",
+        "details": "Create API endpoints: POST /api/users (registration), GET /api/users/profile (get current user), PUT /api/users/profile (update profile). Implement validation middleware using express-validator for: networking intention (enum: 'Searching for a job', 'Searching for a hire', 'Just chat'), industry (predefined list), tech skills (max 3 from predefined list), soft skills (max 3 from predefined list). Store skills as JSON arrays in database. Add input sanitization and proper error handling with meaningful error messages.",
+        "testStrategy": "Test all CRUD operations, field validation rules, data type constraints, and error handling for invalid inputs",
+        "priority": "high",
+        "dependencies": [
+          "2"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:46:28.554Z"
+      },
+      {
+        "id": 4,
+        "title": "Frontend Authentication Components",
+        "description": "Build React components for user registration and login forms with form validation and error handling",
+        "details": "Create components: LoginForm, RegisterForm, AuthProvider context. Use React Hook Form for form management and validation. Implement client-side validation matching backend rules. Create custom hooks for authentication state management. Add loading states, error displays, and success feedback. Use React Router for navigation between auth pages. Implement protected routes that redirect unauthenticated users. Style with CSS modules or styled-components for responsive design.",
+        "testStrategy": "Test form validation, successful/failed authentication flows, route protection, and responsive design on mobile and desktop",
+        "priority": "high",
+        "dependencies": [
+          "3"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:46:38.806Z"
+      },
+      {
+        "id": 5,
+        "title": "Conference Schedule Management",
+        "description": "Implement conference session data model and user availability tracking based on selected sessions",
+        "details": "Hard-code initial conference sessions in database seed file with realistic WTM MTL schedule. Create API endpoints: GET /api/sessions (list all sessions), POST /api/users/sessions (mark attendance), DELETE /api/users/sessions/:sessionId (unmark attendance), GET /api/users/sessions (get user's selected sessions). Implement time conflict detection to prevent double-booking. Add session filtering by time and location. Store user-session relationships in junction table.",
+        "testStrategy": "Verify session data integrity, user attendance marking/unmarking, time conflict detection, and proper API responses",
+        "priority": "medium",
+        "dependencies": [
+          "3"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:46:50.647Z"
+      },
+      {
+        "id": 6,
+        "title": "User Matching Algorithm",
+        "description": "Implement the matching logic to suggest connections based on networking intention, industry, and skills overlap",
+        "details": "Create matching service with scoring algorithm: 1) Filter users with same networking intention (weight: 40%), 2) Boost users in same industry (weight: 30%), 3) Calculate skill overlap score for tech and soft skills (weight: 30%). Exclude current user and users with existing meeting requests. Implement GET /api/matches endpoint that returns sorted list of suggested matches with match score and shared attributes. Add pagination for large user bases. Cache results for performance.",
+        "testStrategy": "Test matching logic with various user profiles, verify scoring accuracy, exclude logic works, and performance with larger datasets",
+        "priority": "high",
+        "dependencies": [
+          "5"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T16:53:37.582Z"
+      },
+      {
+        "id": 7,
+        "title": "Meeting Request System Backend",
+        "description": "Build API endpoints for creating, managing, and responding to meeting requests with time slot validation",
+        "details": "Create API endpoints: POST /api/meeting-requests (create request), GET /api/meeting-requests/inbox (incoming), GET /api/meeting-requests/outbox (outgoing), PUT /api/meeting-requests/:id/accept, PUT /api/meeting-requests/:id/decline. Validate proposed times don't conflict with either user's selected sessions. Implement status tracking (pending, accepted, declined). Add note character limit validation (200 chars). Prevent duplicate requests between same users. Include user details in request responses for UI display.",
+        "testStrategy": "Test request creation, status updates, time conflict validation, duplicate prevention, and proper data relationships",
+        "priority": "high",
+        "dependencies": [
+          "6"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T17:03:49.459Z"
+      },
+      {
+        "id": 8,
+        "title": "Frontend Matching and Connection Interface",
+        "description": "Create React components to display suggested matches and initiate meeting requests",
+        "details": "Build components: MatchList, MatchCard, MeetingRequestModal. Display match information: display name, networking intention, industry, shared skills highlighted. Add 'Request Meeting' button that opens modal with time slot picker (excluding conflicted times), location selector (Main corridor/Garden), and optional note field. Implement real-time availability checking. Add loading states and success/error feedback. Use responsive card layout for mobile and desktop.",
+        "testStrategy": "Test match display accuracy, meeting request flow, time slot validation, responsive design, and user interaction feedback",
+        "priority": "medium",
+        "dependencies": [
+          "7"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T17:07:52.895Z"
+      },
+      {
+        "id": 9,
+        "title": "Meeting Request Management Interface",
+        "description": "Build inbox/outbox interface for users to view and respond to meeting requests",
+        "details": "Create components: RequestInbox, RequestOutbox, RequestCard. Display incoming requests with requester info, proposed time/location, note, and Accept/Decline buttons. Show outgoing requests with recipient info and status. Add filtering by status (pending, accepted, declined). Implement request actions with confirmation dialogs. Add timestamp formatting and status badges. Include navigation between inbox/outbox tabs. Show empty states when no requests exist.",
+        "testStrategy": "Test request display, action buttons functionality, status updates, filtering, and empty state handling",
+        "priority": "medium",
+        "dependencies": [
+          "8"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T17:12:19.575Z"
+      },
+      {
+        "id": 10,
+        "title": "Schedule Integration and Final Polish",
+        "description": "Integrate conference schedule display with user availability and add final UI/UX improvements",
+        "details": "Create ScheduleView component showing all conference sessions with user's selections highlighted. Add session attendance toggle functionality. Display user's confirmed meetings in schedule view. Implement responsive navigation between all app sections. Add loading spinners, error boundaries, and proper error handling throughout the app. Optimize API calls with caching where appropriate. Add basic accessibility features (ARIA labels, keyboard navigation). Perform final testing and bug fixes.",
+        "testStrategy": "Test complete user journey from registration to meeting scheduling, verify schedule integration, responsive design across devices, and accessibility compliance",
+        "priority": "medium",
+        "dependencies": [
+          "9"
+        ],
+        "status": "done",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T17:16:45.236Z"
+      },
+      {
+        "id": 11,
+        "title": "Update Event Date Configuration to April 18th, 2026",
+        "description": "Update all hardcoded event dates throughout the WTM MTL Connector application from current date to April 18th, 2026, including configuration files, UI components, and validation logic.",
+        "details": "Systematically update event date references across the entire application: 1) Update database seed files to reflect April 18th, 2026 conference date for all session timestamps and scheduling logic, 2) Modify frontend components to display the correct event date in headers, registration forms, and schedule views, 3) Update validation logic for meeting request time slots to ensure they fall within the April 18th, 2026 conference day boundaries, 4) Review and update any configuration files, environment variables, or constants that reference the event date, 5) Update time conflict detection algorithms to use the new date for session overlap calculations, 6) Ensure all date formatting and display components show April 18th, 2026 consistently across the application, 7) Update any hardcoded date ranges used for filtering or validation purposes.",
+        "testStrategy": "Verify date consistency across all application components by checking: database seed data shows April 18th, 2026 for all sessions, UI displays correct event date in all locations, meeting request validation properly restricts time slots to the conference day, time conflict detection works correctly with new date, schedule views show proper date formatting, and end-to-end user flow from registration to meeting scheduling uses consistent April 18th, 2026 date throughout.",
+        "status": "done",
+        "dependencies": [
+          5,
+          7,
+          10
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T18:30:00.000Z"
+      },
+      {
+        "id": 12,
+        "title": "Meeting Request Cancellation and Unconfirm System",
+        "description": "Implement functionality to allow users to cancel or unconfirm existing meeting requests, including both sent and received requests with proper status management.",
+        "details": "Add new API endpoints: PUT /api/meeting-requests/:id/cancel (for requesters to cancel pending requests), PUT /api/meeting-requests/:id/unconfirm (for either party to unconfirm accepted meetings). Update MeetingRequest model to include 'cancelled' and 'unconfirmed' status options. Implement business logic to handle status transitions: pending->cancelled, accepted->unconfirmed. Add validation to prevent cancellation/unconfirmation of already declined or cancelled requests. Update frontend components in RequestInbox and RequestOutbox to display Cancel/Unconfirm buttons based on request status and user role (requester vs recipient). Add confirmation dialogs for destructive actions. Update request cards to show cancelled/unconfirmed status with appropriate styling. Implement real-time updates to reflect status changes immediately. Add email notifications for cancellation/unconfirmation events. Ensure time slots become available again when meetings are cancelled or unconfirmed.",
+        "testStrategy": "Test cancellation of pending outgoing requests and verify status update in database and UI. Test unconfirming accepted meetings from both requester and recipient perspectives. Verify cancelled/unconfirmed meetings free up time slots for new requests. Test that cancelled requests cannot be accepted/declined and unconfirmed meetings cannot be re-unconfirmed. Validate proper button visibility based on request status and user permissions. Test confirmation dialogs prevent accidental cancellations. Verify email notifications are sent to affected parties. Test edge cases like attempting to cancel already declined requests.",
+        "status": "done",
+        "dependencies": [
+          7,
+          9
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T19:00:00.000Z"
+      },
+      {
+        "id": 13,
+        "title": "Fixed Date Validation for Meeting Scheduling",
+        "description": "Implement fixed date validation that restricts all meeting scheduling to April 18th, 2026 only, removing date picker functionality and enforcing this constraint across the application.",
+        "details": "Update the meeting request system to enforce a fixed date of April 18th, 2026: 1) Remove date picker components from MeetingRequestModal and replace with fixed date display showing \"April 18th, 2026\", 2) Update backend validation in meeting request endpoints to automatically set and validate that all meeting requests use April 18th, 2026 as the date, rejecting any requests with different dates, 3) Modify time slot validation logic to only allow time selections within the conference day boundaries of April 18th, 2026, 4) Update frontend time slot picker to show only available time slots for the fixed date, 5) Add server-side validation middleware that checks all incoming meeting request dates match April 18th, 2026 exactly, 6) Update database constraints and model validation to enforce the fixed date requirement, 7) Modify any existing meeting request forms to display the fixed date prominently and remove any date selection controls, 8) Update error messages to clearly indicate that meetings can only be scheduled for April 18th, 2026.",
+        "testStrategy": "Test fixed date enforcement by: 1) Verifying that meeting request forms display April 18th, 2026 as a fixed, non-editable date, 2) Attempting to submit meeting requests with different dates via API and confirming they are rejected with appropriate error messages, 3) Testing that time slot picker only shows available times for April 18th, 2026, 4) Verifying that existing meeting requests are still valid and display correctly with the fixed date, 5) Testing that date validation works consistently across all meeting request endpoints (create, update, cancel, unconfirm), 6) Confirming that database constraints prevent insertion of meeting requests with incorrect dates, 7) Testing edge cases like timezone handling to ensure April 18th, 2026 is correctly interpreted, 8) Verifying that error messages are user-friendly and clearly explain the fixed date requirement.",
+        "status": "done",
+        "dependencies": [
+          7,
+          11,
+          12
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T19:30:00.000Z"
+      },
+      {
+        "id": 14,
+        "title": "Fix Email Field Character Display in Dashboard",
+        "description": "Resolve email field rendering issues in the dashboard where punctuation characters (dots, plus signs, hyphens) are being stripped or misformatted during display.",
+        "details": "Investigate and fix email display issues across dashboard components: 1) Audit all email field rendering locations in dashboard components (user profiles, meeting request cards, participant lists) to identify where character stripping occurs, 2) Check for improper HTML encoding/decoding, overzealous input sanitization, or CSS text-transform properties that might affect punctuation display, 3) Review email validation and storage logic to ensure special characters are properly preserved in the database, 4) Update email display components to use proper HTML entity encoding and ensure CSS doesn't interfere with character rendering, 5) Test with various email formats including those with dots (john.doe@example.com), plus signs (user+tag@domain.com), and hyphens (first-last@company.co.uk), 6) Implement consistent email formatting utility function if needed to standardize display across components, 7) Verify email fields maintain proper formatting in both read-only displays and editable forms.",
+        "testStrategy": "Test email character display by: 1) Creating test user accounts with emails containing various punctuation (dots, plus signs, hyphens, underscores), 2) Verifying these emails display correctly in all dashboard locations including user profiles, meeting request sender/recipient fields, and participant lists, 3) Testing email display in both light and dark themes if applicable, 4) Checking email formatting in exported data or printed views, 5) Validating that copy-paste functionality works correctly from displayed email fields, 6) Testing with edge cases like multiple consecutive dots or special character combinations, 7) Confirming that email links (mailto:) function properly with all character types, 8) Cross-browser testing to ensure consistent rendering across different browsers.",
+        "status": "done",
+        "dependencies": [
+          10
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T20:00:00.000Z"
+      },
+      {
+        "id": 15,
+        "title": "Responsive Header Menu for Mobile Devices",
+        "description": "Implement a responsive hamburger/collapsible menu for the header navigation on mobile devices while preserving the existing desktop layout.",
+        "details": "Create a responsive header navigation system that adapts to different screen sizes: 1) Add CSS media queries to detect mobile breakpoints (typically 768px and below) and hide the desktop navigation menu on smaller screens, 2) Implement a hamburger menu button (three horizontal lines icon) that appears only on mobile devices, positioned in the top-right corner of the header, 3) Create a collapsible mobile menu component that slides down or overlays when the hamburger button is clicked, containing all navigation links from the desktop version, 4) Add smooth CSS transitions for menu open/close animations and ensure proper z-index layering so the mobile menu appears above other content, 5) Implement click-outside-to-close functionality and ensure the menu closes when a navigation link is selected, 6) Style the mobile menu with appropriate spacing, typography, and touch-friendly button sizes (minimum 44px touch targets), 7) Add proper ARIA attributes for accessibility (aria-expanded, aria-label, role=\"button\") and ensure keyboard navigation works correctly, 8) Test across various mobile devices and screen orientations to ensure consistent behavior and appearance.",
+        "testStrategy": "Test responsive header functionality by: 1) Verifying desktop layout remains unchanged on screens wider than 768px with all navigation links visible, 2) Confirming hamburger menu button appears and desktop navigation disappears on mobile screens, 3) Testing menu open/close functionality by clicking the hamburger button and verifying smooth animations, 4) Checking that all navigation links are accessible and functional within the mobile menu, 5) Testing click-outside-to-close behavior and automatic menu closure when selecting navigation items, 6) Verifying touch targets are appropriately sized for mobile interaction, 7) Testing keyboard navigation and screen reader compatibility with proper ARIA attributes, 8) Validating consistent appearance and functionality across different mobile devices, browsers, and screen orientations (portrait/landscape).",
+        "status": "done",
+        "dependencies": [
+          10
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T20:30:00.000Z"
+      },
+      {
+        "id": 16,
+        "title": "Update App Color Scheme to New Brand Colors",
+        "description": "Update the application's color scheme to primarily use #2480F0 (blue) and #0F7C67 (teal) for buttons, links, header, and key accents while resolving any conflicting styles.",
+        "details": "Implement a comprehensive color scheme update across the entire application: 1) Update CSS variables or theme configuration to define primary colors as #2480F0 (blue) and #0F7C67 (teal), establishing a clear color hierarchy where blue serves as the primary brand color and teal as the secondary accent, 2) Systematically update all button styles to use the new color palette - primary buttons should use #2480F0 with appropriate hover states (darker shade), secondary buttons can use #0F7C67, and ensure proper contrast ratios for accessibility, 3) Update all link colors throughout the application to use #2480F0, including navigation links, text links, and interactive elements, with hover states that maintain visual consistency, 4) Redesign the header component to incorporate the new colors - this may include background colors, logo accents, navigation styling, and any header-specific branding elements, 5) Update key accent colors used in form elements, icons, progress indicators, status badges, and other UI components to align with the new palette, 6) Review and resolve any color conflicts that arise from the changes, particularly ensuring text remains readable against new background colors and that the overall visual hierarchy is maintained, 7) Update any CSS custom properties, SCSS variables, or theme files to centralize the new color definitions for maintainability, 8) Ensure the mobile responsive header (from Task 15) properly incorporates the new color scheme in its hamburger menu and mobile navigation states.",
+        "testStrategy": "Verify color scheme implementation by: 1) Conducting a visual audit of all major application pages (dashboard, meeting requests, user profiles, forms) to confirm consistent use of #2480F0 and #0F7C67 in appropriate contexts, 2) Testing all interactive elements (buttons, links, form inputs) to ensure they use the new colors and have proper hover/focus states, 3) Verifying the header displays the new color scheme correctly on both desktop and mobile views, 4) Checking color contrast ratios using accessibility tools to ensure all text remains readable against new background colors (minimum 4.5:1 for normal text, 3:1 for large text), 5) Testing across different browsers and devices to ensure color consistency, 6) Validating that no old color values remain in the codebase by searching for previous color codes, 7) Confirming that the mobile hamburger menu and responsive navigation properly reflect the new color scheme.",
+        "status": "done",
+        "dependencies": [
+          15
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T21:00:00.000Z"
+      },
+      {
+        "id": 17,
+        "title": "Implement Logo in Top Banner with Responsive Design",
+        "description": "Add the 'Logo (EXT) (1).png' file as the main logo in the application's top banner with a maximum height of 150px, ensuring proper display and scaling across desktop and mobile devices.",
+        "details": "Implement logo integration in the header/banner component: 1) Add the 'Logo (EXT) (1).png' file to the application's assets directory (typically /public/images/ or /src/assets/), 2) Update the header component to include an img element with src pointing to the logo file, setting max-height: 150px and width: auto to maintain aspect ratio, 3) Implement responsive CSS using media queries to ensure the logo scales appropriately on mobile devices - consider reducing max-height to 100px or 80px on screens below 768px to prevent header overflow, 4) Add proper alt text for accessibility (e.g., 'Company Logo'), 5) Position the logo appropriately within the header layout, typically on the left side, ensuring it doesn't interfere with navigation elements, 6) Optimize loading by adding loading='lazy' attribute if the logo is below the fold, and consider using CSS object-fit: contain to ensure proper scaling, 7) Test logo display with the new brand colors from Task 16 to ensure visual harmony, 8) Ensure the logo remains clickable and links to the home page if applicable.",
+        "testStrategy": "Verify logo implementation by: 1) Confirming the logo file loads correctly without 404 errors and displays in the header on all major pages, 2) Testing responsive behavior by resizing browser window and using device emulation to ensure logo scales appropriately on mobile devices (320px, 768px, 1024px, 1440px widths), 3) Measuring logo height to confirm it never exceeds 150px on desktop and scales down appropriately on mobile, 4) Verifying logo maintains proper aspect ratio and doesn't appear stretched or distorted, 5) Testing logo visibility against the header background, especially with the new brand colors from Task 16, 6) Checking accessibility by verifying alt text is present and descriptive, 7) Testing logo positioning to ensure it doesn't overlap with navigation elements on mobile (hamburger menu from Task 15), 8) Validating logo performance by checking load times and ensuring it doesn't significantly impact page speed.",
+        "status": "done",
+        "dependencies": [
+          15,
+          16
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T21:30:00.000Z"
+      },
+      {
+        "id": 18,
+        "title": "Fix Meeting Request Unconfirmation Flow",
+        "description": "Debug and resolve errors in the meeting request unconfirmation (cancellation) flow to ensure users can reliably cancel their meeting requests without encountering system failures.",
+        "details": "Investigate and fix the unconfirmation flow issues in the meeting request system: 1) Analyze error logs and reproduce the unconfirmation bug by attempting to cancel meeting requests in various states (pending, accepted) to identify the root cause, 2) Review the backend API endpoint for meeting request cancellation (likely PUT /api/meeting-requests/:id/cancel or similar) to check for missing error handling, database constraint violations, or improper status transitions, 3) Examine the frontend RequestCard and RequestOutbox components to ensure the cancel/unconfirm button properly handles API responses and error states, 4) Verify that the cancellation logic properly updates meeting request status, notifies affected users, and handles edge cases like attempting to cancel already declined/cancelled requests, 5) Check for race conditions where multiple users might interact with the same request simultaneously, 6) Ensure proper cleanup of any associated data (notifications, calendar entries) when a request is cancelled, 7) Add comprehensive error handling with user-friendly error messages for different failure scenarios, 8) Implement proper loading states and disable buttons during cancellation processing to prevent duplicate requests.",
+        "testStrategy": "Test unconfirmation flow reliability by: 1) Creating meeting requests in different states (pending, accepted) and attempting to cancel each one, verifying successful cancellation and proper status updates, 2) Testing error scenarios including network failures, server errors, and invalid request states to ensure graceful error handling with appropriate user feedback, 3) Performing concurrent testing where multiple users interact with the same meeting request simultaneously to check for race conditions, 4) Verifying that cancelled requests are properly reflected in both sender's outbox and recipient's inbox with correct status indicators, 5) Testing edge cases like cancelling already declined requests, expired requests, or requests from deleted users, 6) Confirming that any associated notifications or calendar entries are properly cleaned up after cancellation, 7) Testing the complete user journey from request creation through cancellation to ensure no broken states remain in the system.",
+        "status": "done",
+        "dependencies": [
+          7,
+          9
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T22:00:00.000Z"
+      },
+      {
+        "id": 19,
+        "title": "Dashboard Schedule and Appointments Recap Display",
+        "description": "Create a comprehensive recap section in the dashboard that displays the user's selected conference sessions and all accepted meeting appointments with detailed time, location, and participant information.",
+        "details": "Implement a dashboard recap component that consolidates the user's conference schedule and meeting appointments: 1) Create a new DashboardRecap component that fetches and displays the user's selected conference sessions from the existing /api/users/sessions endpoint, showing session title, time, location, and description in a clean card layout, 2) Integrate with the meeting requests system to retrieve all accepted appointments using the existing meeting API endpoints, displaying meeting time, location (virtual/in-person), and participant details including names and profile information, 3) Implement a unified timeline view that chronologically orders both conference sessions and meetings throughout the conference day (April 18th, 2026), with clear visual distinction between session attendance and personal meetings, 4) Add filtering and sorting options to allow users to view their schedule by time, type (sessions vs meetings), or location, 5) Include conflict detection warnings if any meetings overlap with selected conference sessions, 6) Ensure responsive design that works well on both desktop and mobile devices, maintaining the established color scheme (#2480F0 and #0F7C67) and consistent styling with the rest of the application, 7) Add export functionality to allow users to download their schedule as a PDF or calendar file (.ics) for external calendar integration.",
+        "testStrategy": "Verify dashboard recap functionality by: 1) Testing with users who have selected various conference sessions and confirmed meeting appointments, ensuring all data displays correctly with proper time formatting and participant information, 2) Validating the chronological timeline ordering by creating test scenarios with overlapping sessions and meetings throughout the conference day, 3) Testing responsive design across different screen sizes to ensure the recap displays properly on mobile devices and tablets, 4) Verifying conflict detection by scheduling meetings that overlap with selected conference sessions and confirming appropriate warnings appear, 5) Testing filtering and sorting functionality to ensure users can effectively organize their schedule view, 6) Validating export functionality by generating PDF and calendar files and confirming they contain accurate schedule information, 7) Testing edge cases including users with no selected sessions, no confirmed meetings, or both empty states to ensure graceful handling.",
+        "status": "done",
+        "dependencies": [
+          5,
+          10,
+          11
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-14T23:00:00.000Z"
+      },
+      {
+        "id": 20,
+        "title": "Implement User-Friendly Error Messages for Appointment Booking Failures",
+        "description": "Create a comprehensive error handling system that displays clear, actionable error messages when appointment booking fails due to conflicts, server errors, or other issues.",
+        "details": "Implement robust error handling for the appointment booking system: 1) Create a centralized error message component that can display different types of booking errors with appropriate styling and icons - use consistent visual design with the brand colors (#2480F0 and #0F7C67) for error states, 2) Define specific error message templates for common booking failure scenarios: scheduling conflicts (\"This time slot is no longer available. Please select a different time.\"), server errors (\"We're experiencing technical difficulties. Please try again in a few moments.\"), validation errors (\"Please check your appointment details and try again.\"), and network connectivity issues (\"Connection lost. Please check your internet and retry.\"), 3) Update the booking API error responses to return structured error codes and messages that the frontend can interpret and display appropriately, 4) Implement error state management in the booking form component to show errors inline near relevant form fields when possible, with a prominent error banner for general failures, 5) Add retry functionality for transient errors with exponential backoff, and provide clear next steps or alternative actions for permanent failures, 6) Ensure error messages are accessible with proper ARIA labels and screen reader support, 7) Log booking errors for monitoring and debugging purposes while maintaining user privacy.",
+        "testStrategy": "Verify error handling implementation by: 1) Testing each error scenario by simulating booking conflicts (attempting to book already-taken slots), server errors (temporarily disabling backend services), validation errors (submitting incomplete forms), and network issues (throttling connection), 2) Confirming appropriate error messages display for each scenario with correct styling and positioning, 3) Testing retry functionality by triggering transient errors and verifying automatic retry attempts with proper timing, 4) Validating accessibility by using screen readers to ensure error messages are properly announced and keyboard navigation works correctly in error states, 5) Testing error message persistence and clearing - ensuring errors disappear when users correct issues or successfully complete bookings, 6) Verifying error logging captures necessary debugging information without exposing sensitive user data, 7) Testing error handling across different devices and browsers to ensure consistent behavior.",
+        "status": "done",
+        "dependencies": [
+          16,
+          18
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-15T00:00:00.000Z"
+      },
+      {
+        "id": 21,
+        "title": "Database Reset and Test User Seeding Mechanism",
+        "description": "Create a database utility mechanism that can completely empty the database and restore exactly 3 predefined test users with realistic data for WTM MTL Connector testing and development purposes.",
+        "details": "Implement a comprehensive database reset and seeding system: 1) Create a database utility script (e.g., /scripts/resetDatabase.js or /utils/dbReset.ts) that can safely truncate all tables in the correct order to avoid foreign key constraint violations - start with dependent tables (user_sessions, meeting_requests) before parent tables (users, sessions), 2) Design 3 predefined test users with realistic WTM MTL Connector data: User 1 - Software Developer with React/Node.js skills and networking intention for career growth, User 2 - Product Manager with leadership skills seeking mentorship opportunities, User 3 - Data Scientist with Python/ML expertise looking for collaboration partners. Include realistic display names, email addresses (test1@wtmmtl.com, etc.), hashed passwords, industry affiliations, and skill sets, 3) Implement the seeding functionality to insert these 3 users with consistent IDs and data structure that matches the existing schema from Task 1, 4) Create both programmatic API endpoint (POST /api/admin/reset-database) and CLI script options for triggering the reset, with proper authentication/authorization checks to prevent accidental production use, 5) Add environment variable checks to ensure this functionality is only available in development/testing environments (NODE_ENV !== 'production'), 6) Include transaction handling to ensure the reset operation is atomic - if any part fails, rollback all changes to maintain database integrity.",
+        "testStrategy": "Verify database reset functionality by: 1) Testing the complete reset process by first populating the database with various user data, sessions, and meeting requests, then executing the reset mechanism and confirming all tables are empty except for the 3 predefined test users, 2) Validating that the 3 test users are created with correct data structure, proper password hashing, and all required fields populated according to the schema from Task 1, 3) Testing the reset mechanism multiple times in succession to ensure it's idempotent and doesn't create duplicate users or fail on subsequent runs, 4) Verifying environment protection by attempting to run the reset in a simulated production environment and confirming it's properly blocked, 5) Testing both API endpoint and CLI script approaches to ensure both methods work correctly and produce identical results, 6) Confirming that the test users can successfully log in and use all application features (session selection, meeting requests) after the reset process completes.",
+        "status": "done",
+        "dependencies": [
+          1
+        ],
+        "priority": "medium",
+        "subtasks": [],
+        "updatedAt": "2026-02-15T01:00:00.000Z"
+      }
+    ],
+    "metadata": {
+      "version": "1.0.0",
+      "lastModified": "2026-02-14T17:16:45.237Z",
+      "taskCount": 10,
+      "completedCount": 10,
+      "tags": [
+        "master"
+      ],
+      "created": "2026-02-14T17:48:22.993Z",
+      "description": "Tasks for master context",
+      "updated": "2026-02-14T21:23:53.548Z"
+    }
+  }
+}

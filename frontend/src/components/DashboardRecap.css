@@ -1,0 +1,394 @@
+/* Dashboard Recap Component */
+.dashboard-recap {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.recap-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.recap-header h2 {
+  margin: 0 0 0.5rem 0;
+  font-size: 2rem;
+  color: var(--text-primary);
+}
+
+.recap-subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Loading State */
+.recap-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4rem 0;
+  gap: 1rem;
+}
+
+.recap-loading .spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid #e5e7eb;
+  border-top-color: var(--primary-color);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Error State */
+.recap-error {
+  background: #fee2e2;
+  color: #991b1b;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 2rem 0;
+}
+
+.error-icon {
+  font-size: 1.5rem;
+}
+
+/* Conflict Warning */
+.conflict-warning {
+  background: #fef3c7;
+  color: #92400e;
+  padding: 1rem 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  border-left: 4px solid #f59e0b;
+  animation: slideDown 0.3s ease-out;
+}
+
+.warning-icon {
+  font-size: 1.25rem;
+}
+
+/* Controls */
+.recap-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.filter-btn {
+  padding: 0.625rem 1.25rem;
+  border: 2px solid var(--border-color);
+  background: white;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-btn:hover {
+  border-color: var(--primary-color);
+  color: var(--primary-color);
+}
+
+.filter-btn.active {
+  background: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+}
+
+.export-btn {
+  padding: 0.625rem 1.25rem;
+  background: var(--secondary-color);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.export-btn:hover {
+  background: #0d6b5a;
+  transform: translateY(-1px);
+}
+
+/* Empty State */
+.empty-schedule {
+  text-align: center;
+  padding: 4rem 2rem;
+  background: #f9fafb;
+  border-radius: 12px;
+  margin: 2rem 0;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+}
+
+.empty-schedule h3 {
+  color: var(--text-primary);
+  font-size: 1.5rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.empty-schedule p {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  max-width: 500px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* Timeline */
+.schedule-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* Schedule Item */
+.schedule-item {
+  background: white;
+  border: 2px solid var(--border-color);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  gap: 1.5rem;
+  transition: all 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.schedule-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--primary-color);
+}
+
+.schedule-item.session::before {
+  background: var(--primary-color);
+}
+
+.schedule-item.meeting::before {
+  background: var(--secondary-color);
+}
+
+.schedule-item.conflict {
+  border-color: #f59e0b;
+  background: #fffbeb;
+}
+
+.schedule-item:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transform: translateY(-2px);
+}
+
+/* Item Time */
+.item-time {
+  flex-shrink: 0;
+  padding-top: 0.25rem;
+}
+
+.time-range {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  white-space: nowrap;
+}
+
+/* Item Content */
+.item-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.item-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.item-type-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  background: #e5e7eb;
+  color: #374151;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.schedule-item.session .item-type-badge {
+  background: rgba(36, 128, 240, 0.1);
+  color: var(--primary-color);
+}
+
+.schedule-item.meeting .item-type-badge {
+  background: rgba(15, 124, 103, 0.1);
+  color: var(--secondary-color);
+}
+
+.conflict-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.item-title {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.item-details {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.item-detail {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+.item-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.5rem;
+  padding: 0.75rem;
+  background: #f9fafb;
+  border-radius: 6px;
+}
+
+.detail-icon {
+  font-size: 1rem;
+  flex-shrink: 0;
+}
+
+/* Summary */
+.recap-summary {
+  text-align: center;
+  padding: 1.5rem 0;
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .dashboard-recap {
+    padding: 0 0.75rem;
+  }
+
+  .recap-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .recap-subtitle {
+    font-size: 1rem;
+  }
+
+  .recap-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filter-buttons {
+    width: 100%;
+  }
+
+  .filter-btn {
+    flex: 1;
+    min-width: 0;
+    padding: 0.75rem 0.5rem;
+    font-size: 0.875rem;
+  }
+
+  .export-btn {
+    width: 100%;
+  }
+
+  .schedule-item {
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .item-time {
+    padding-top: 0;
+  }
+
+  .item-title {
+    font-size: 1.1rem;
+  }
+
+  .empty-schedule {
+    padding: 3rem 1.5rem;
+  }
+
+  .empty-icon {
+    font-size: 3rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .filter-btn {
+    font-size: 0.8rem;
+    padding: 0.625rem 0.5rem;
+  }
+
+  .item-type-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+
+  .conflict-badge {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+  }
+}
